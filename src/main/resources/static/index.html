@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boog🐻le 搜尋引擎</title>
+    <style>
+        body {
+            font-family: "Noto Sans TC", sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #4285F4;
+            margin-top: 80px;
+        }
+
+        .logo span:nth-child(2) { color: #EA4335; }
+        .logo span:nth-child(3) { color: #FBBC05; }
+        .logo span:nth-child(4) { color: #4285F4; }
+        .logo span:nth-child(5) { color: #34A853; }
+        .logo span:nth-child(6) { color: #EA4335; }
+
+        .search-box {
+            margin-top: 40px;
+            display: flex;
+            justify-content: center;
+            width: 60%;
+        }
+
+        input[type="text"] {
+            width: 80%;
+            padding: 12px 20px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 25px 0 0 25px;
+            outline: none;
+        }
+
+        button {
+            padding: 12px 25px;
+            border: none;
+            background-color: #4285F4;
+            color: white;
+            border-radius: 0 25px 25px 0;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #357ae8;
+        }
+
+        .results {
+            margin-top: 40px;
+            width: 70%;
+            max-width: 800px;
+        }
+
+        .result-item {
+            background-color: white;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .result-item a {
+            color: #1a0dab;
+            text-decoration: none;
+            font-size: 18px;
+        }
+
+        .result-item small {
+            color: #006621;
+            display: block;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="logo">
+        <span>B</span><span>o</span><span>o</span><span>g</span><span>🐻</span><span>le</span>
+    </div>
+
+    <div class="search-box">
+        <input type="text" id="query" placeholder="輸入關鍵字...">
+        <button onclick="searchKeyword()">搜尋</button>
+    </div>
+
+    <div class="results" id="results"></div>
+
+    <script>
+        async function searchKeyword() {
+            const q = document.getElementById("query").value.trim();
+            if (!q) {
+                alert("請輸入搜尋關鍵字！");
+                return;
+            }
+
+            const response = await fetch(`/search?q=${encodeURIComponent(q)}`);
+            const data = await response.json();
+
+            const container = document.getElementById("results");
+            container.innerHTML = "";
+
+            if (Object.keys(data).length === 0) {
+                container.innerHTML = "<p>沒有找到相關結果。</p>";
+                return;
+            }
+
+            for (const [title, link] of Object.entries(data)) {
+                const div = document.createElement("div");
+                div.className = "result-item";
+                div.innerHTML = `<a href="${link}" target="_blank">${title}</a><small>${link}</small>`;
+                container.appendChild(div);
+            }
+        }
+    </script>
+</body>
+</html>
